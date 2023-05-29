@@ -8,7 +8,6 @@ import subprocess
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_agg import FigureCanvasAgg
-import sys
 from PIL import Image, ImageTk
 import tkinter
 
@@ -529,12 +528,3 @@ class App(customtkinter.CTk):
             self.prc.set_status(State.DEFAULT)
         self.prc.set_show_box(True)
 
-
-def on_closing():
-    # Something is wrong with image rendering I guess?
-    app.destroy()
-    sys.exit()
-
-app = App()
-app.protocol("WM_DELETE_WINDOW", on_closing)
-app.mainloop()
