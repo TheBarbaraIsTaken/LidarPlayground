@@ -6,8 +6,6 @@ from read_lidar import LidarProcesser, State
 import subprocess
 #import json
 import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.backends.backend_agg import FigureCanvasAgg
 from PIL import Image, ImageTk
 import tkinter
 
