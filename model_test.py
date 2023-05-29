@@ -16,8 +16,8 @@ class LidarTest(unittest.TestCase):
         mask = img[img != 255]
         self.assertFalse(mask.any())
 
-        self.assertEqual(self.prc.get_color_array(), [])
-        self.assertEqual(self.prc.get_array(), [])
+        self.assertEqual(self.prc.get_color_array(0,1), [])
+        self.assertEqual(self.prc.get_array(0,1), [])
         self.assertEqual(self.prc.get_extents(), (0,0,0))
         self.assertEqual(self.prc.get_avg_pcd_len(), 0)
         self.assertEqual(self.prc.get_first_frame(), [])
@@ -57,9 +57,9 @@ class LidarTest(unittest.TestCase):
         self.assertNotEqual(self.prc.get_frame_num(),0)
 
         self.prc.set_status(State.GROUND_FILTER)
-        self.assertEqual(len(self.prc.get_array()), 0)
+        self.assertEqual(len(self.prc.get_array(0,1)), 0)
         self.prc.filter_ground(0,1,10,0.1)
-        self.assertNotEqual(len(self.prc.get_array()), 0)
+        self.assertNotEqual(len(self.prc.get_array(0,1)), 0)
 
         self.assertEqual(self.prc.get_cluster_num(), 1)
         ex = self.prc.get_extents()
@@ -70,7 +70,7 @@ class LidarTest(unittest.TestCase):
 
 
         self.prc.set_status(State.HEATMAP)
-        colors = self.prc.get_color_array()
+        colors = self.prc.get_color_array(0,1)
 
         mask0 = ~np.isnan(colors[:,:,0])
         mask1 = colors[:,:,0] != 1
@@ -81,7 +81,7 @@ class LidarTest(unittest.TestCase):
         self.assertFalse(mask.any())
 
         self.assertIs(self.prc.heatmap_colors(900), None)
-        colors = self.prc.get_color_array()
+        colors = self.prc.get_color_array(0,1)
 
         mask0 = ~np.isnan(colors[:,:,0])
         mask1 = colors[:,:,0] != 1
@@ -94,12 +94,12 @@ class LidarTest(unittest.TestCase):
 
 
     def test_heatmap_nonpcap(self):
-        self.prc.new_file("./resources/crossing.bag")
+        self.prc.new_file("./resources/next_to_in_parallel.bag")
         self.assertFalse(self.prc.is_empty())
         self.assertNotEqual(self.prc.get_frame_num(),0)
 
         self.prc.set_status(State.HEATMAP)
-        colors = self.prc.get_color_array()
+        colors = self.prc.get_color_array(0,1)
 
         mask0 = ~np.isnan(colors[:,:,0])
         mask1 = colors[:,:,0] != 1
@@ -110,7 +110,7 @@ class LidarTest(unittest.TestCase):
         self.assertFalse(mask.any())
 
         self.assertIs(self.prc.heatmap_colors(900), None)
-        colors = self.prc.get_color_array()
+        colors = self.prc.get_color_array(0,1)
 
         mask0 = ~np.isnan(colors[:,:,0])
         mask1 = colors[:,:,0] != 1
@@ -124,12 +124,12 @@ class LidarTest(unittest.TestCase):
         self.prc.new_file("./resources/pointcloud_1.pcd")
         ex = self.prc.get_extents()
         self.prc.dbscan_colors(0.6, 10, 0, 1, ex)
-        colors_before = self.prc.get_color_array()[0][:,:3]
+        colors_before = self.prc.get_color_array(0,1)[0][:,:3]
         #print(colors_before)
         self.prc.save('./resources/output.pcd', 0)
         
         self.prc.new_file("./resources/output.pcd")
-        colors_after = self.prc.get_color_array()[0][:,:3]
+        colors_after = self.prc.get_color_array(0,1)[0][:,:3]
         self.assertEqual(len(colors_before), len(colors_after))
         self.assertTrue(((colors_before == colors_after) | (np.isnan(colors_before) & np.isnan(colors_after))).all())
         #print(mask.any())
